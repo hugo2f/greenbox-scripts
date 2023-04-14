@@ -1,11 +1,22 @@
 
+// Initialize MongoDB
+// const { MongoClient, ServerApiVersion } = require('mongodb');
+// const url = ''; // TODO: replace with mongo connection string
+// const mongo_client = new MongoClient(url, {
+//   serverApi: {
+//     version: ServerApiVersion.v1,
+//     strict: true,
+//     deprecationErrors: true,
+//   }
+// });
+
+// Initialize Twilio
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
-
-const client = require('twilio')(accountSid, authToken);
+const twilio_client = require('twilio')(accountSid, authToken);
 
 function sendMessage(number, timeToPickup) {
-  client.messages
+  twilio_client.messages
     .create({
       body: `Reminder: pickup in ${timeToPickup}!`,
       to: number,
@@ -16,7 +27,6 @@ function sendMessage(number, timeToPickup) {
       console.log(error);
     });
 }
-
 
 function subtractMinutes(date, minutes) {
   const copy = new Date(date);
@@ -42,16 +52,16 @@ var order_dates = [new Date('2023-06-01T08:15:00'), new Date('2023-05-01T10:00:0
 
 order_dates.forEach((date) => {
   message_dates.queue({
-    clientNumber: '+16035849900',
+    clientNumber: '+16035849900', // TODO: use actual client number
     timeToPickup: '15 minutes',
     messageTime: subtractMinutes(date, 15)
   });
   // Can push more times if multiple reminders for each order
 })
-// If orders change, can remove/insert into message_dates
+
 // message_dates[0] is the most recent message to send
-while (message_dates.length > 0) {
-  console.log(message_dates.dequeue().messageTime);
-}
+// while (message_dates.length > 0) {
+//   console.log(message_dates.dequeue().messageTime);
+// }
 
 // setInterval(checkTime, 60000); // Check if any messages need to be sent every minute
