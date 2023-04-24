@@ -38,6 +38,7 @@ function subtractMinutes(date, minutes) {
  * Send pending messages
  */
 function checkTime() {
+  if (message_dates.length === 0) return;
   while (new Date() >= message_dates.peek().timeToPickup) {
     msg = message_dates.dequeue();
     sendMessage(msg.clientNumber, msg.timeToPickup);
